@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en" class="h-100" ng-app="DataManagerApp">
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.7.9/angular.min.js"></script>
+    <ng-include src="'/html/header.html'"></ng-include>
+    <script src="/js/data.js"></script>
+<!-- Begin page content -->
+<main role="main" class="flex-shrink-0" style="margin-top: 60px;">
+    <div class="container">
+        <div class="col-10 mx-auto" >
+            <div class="text-center">
+                <h1>Welcome to the Blog Site!</h1>
+                <p>This Blog Site is developed in the purpose to check IT-Security on Web-Applications.</p>
+                <p>You can register on the top of the Page and Create a User.</p>
+                <p>Than you can login to the site and add own NEW Blog-Entries!</p>
+                <p>Have fun!</h3>
+            </div>
+            <div class="text-center">
+            <h1 style="margin-top: 40px;">Recent Blog Entries: </h1>
+            <br>
+            <div ng-controller="BlogDataController">
+                <div ng-repeat="blogentry in data | orderBy:'-idblogentry'" class="shadow-lg p-3 mb-5 bg-white rounded">
+                    <p>Blogentry Nr. {{blogentry.idblogentry}}</p>
+                    <p>{{blogentry.blogtext}}</p>
+                    <p><i><u>From {{blogentry.username}}</u></i></p>
+                </div>
+            </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<footer class="footer mt-auto py-3">
+  <div class="container">
+    <span class="text-muted">Copyright Stefan Schanz</span>
+  </div>
+</footer>
+</html>
