@@ -147,7 +147,6 @@ app.post("/api/createBlogEntry", function (req, res) {
 
 app.post("/api/deleteBlogEntry", function (req, res) {
   if (req.session.user_id != "") {
-    console.log(req.body.id_blog);
     conn.query(`DELETE FROM blogentry WHERE idblogentry=${req.body.id_blog};`);
     res.redirect("/ownBlog");
   } else {
@@ -180,7 +179,9 @@ app.post("/api/editUser", function (req, res) {
   var newisAdmin = req.body.newisAdmin;
   user_id = parseInt(user_id);
   newisAdmin = parseInt(newisAdmin);
-  console.log(req.session.admin);
+  if (Number.isNaN(newisAdmin)) {
+    newisAdmin = 0;
+  }
   if (req.session.admin != false) {
     conn.query(
       `UPDATE bloguser SET username = '${newusername}', password = '${newpassword}', isAdmin = ${newisAdmin} WHERE idbloguser=${user_id};`
@@ -193,7 +194,6 @@ app.post("/api/editUser", function (req, res) {
 
 app.post("/api/deleteUser", function (req, res) {
   if (req.session.admin != false) {
-    console.log(req.body.id_user);
     conn.query(`DELETE FROM bloguser WHERE idbloguser=${req.body.id_user};`);
     res.redirect("/admin");
   } else {

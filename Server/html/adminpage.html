@@ -13,6 +13,15 @@
                 <p>Have fun!</h3>
             </div>
             <div class="text-center">
+
+                <div ng-controller="AdminController">
+                    <div ng-if="data.length<1">
+                        <div class="text-center">
+                            <h1 style="margin-top: 40px;">Ough you found a site that's only possible to use by Admins!</h1>
+                            <br>
+                        </div>
+                    </div>
+                    <div ng-if="data.length>=1">
             <div ng-controller="UserDataController" style="margin-top: 40px;">
                 <div ng-repeat="user in data">
                     <p>Id User: {{user.idbloguser}}</p>
@@ -23,7 +32,7 @@
                         <span>                                        
                             <form method="POST" action="/api/editUser">
                                 <div class="form-group">
-                                <label for="exampleFormControlInput1">Enter New Blogentry</label>
+                                <label for="exampleFormControlInput1">Edit User {{user.username}}</label>
                                 <input
                                     type="text"
                                     class="form-control"
@@ -68,5 +77,6 @@
                 </div>
             </div>
             </div>
+        </div>
         </div>
     </main>
