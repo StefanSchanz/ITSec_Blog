@@ -70,6 +70,11 @@
           <li class="nav-item">
             <a class="nav-link" href="/Registrate">Registration</a>
           </li>
+          <li ng-controller="LoginController" class="nav-item">
+            <span ng-if="data.length>=1">
+              <a class="nav-link" href="/ownBlog">{{data}}'s Blog</a>
+            </span>
+          </li>
         </ul>
         <div ng-controller="LoginController">
           <div ng-if="data.length<1">

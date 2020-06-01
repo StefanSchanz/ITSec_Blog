@@ -77,3 +77,27 @@ app.controller("LoginController", function ($scope) {
   };
   $scope.sendrequest = setTimeout($scope.request, 100);
 });
+
+app.controller("BlogDataUserController", function ($scope) {
+  $scope.data = [];
+  $scope.request = function () {
+    setTimeout(() => {
+      var xhr = new XMLHttpRequest();
+      xhr.open("GET", "/api/listBlogs", true);
+      xhr.responseText = "text";
+      xhr.onload = function () {
+        if (xhr.readyState == xhr.DONE) {
+          if (xhr.status == 200) {
+            var obj = JSON.parse(xhr.responseText);
+            console.log(obj);
+            $scope.$apply(function () {
+              $scope.data = obj;
+            });
+          }
+        }
+      };
+      xhr.send();
+    });
+  };
+  $scope.sendrequest = setTimeout($scope.request, 100);
+});

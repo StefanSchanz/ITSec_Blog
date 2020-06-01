@@ -99,6 +99,7 @@ app.post("/login", function (req, res) {
       function (err, result, fields) {
         if (result.length) {
           req.session.username = name;
+          req.session.user_id = result[0].idbloguser;
           if (result[0].isAdmin == 1) {
             req.session.admin = true;
           }
@@ -115,9 +116,25 @@ app.get("/api/getloggeduser", function (req, res) {
 });
 
 app.post("/logout", function (req, res) {
-  console.log("Me gettin in logout!");
   req.session.destroy();
   res.end();
+});
+
+app.get("/api/listBlogs", function (req, res) {
+  if (req.session.user_id != "") {
+    conn.query(
+      `SELECT idblogentry, blogtext FROM blogentry WHERE bloguser_idbloguser=${req.session.user_id}`,
+      function (err, result, fields) {
+        if (result != undefined) {
+          res.send(result);
+        }
+      }
+    );
+  }
+});
+
+app.get("/ownBlog", function (req, res) {
+  res.sendFile(path.join(__dirname, "/html/blogpage.html"));
 });
 
 app.listen(3000, function () {
