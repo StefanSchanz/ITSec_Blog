@@ -188,6 +188,16 @@ app.post("/api/editUser", function (req, res) {
   }
 });
 
+app.post("/api/deleteUser", function (req, res) {
+  if (req.session.admin != false) {
+    console.log(req.body.id_user);
+    conn.query(`DELETE FROM bloguser WHERE idbloguser=${req.body.id_user};`);
+    res.redirect("/admin");
+  } else {
+    res.redirect("/");
+  }
+});
+
 app.listen(3000, function () {
   console.log("listening on *:3000");
 });
