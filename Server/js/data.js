@@ -99,5 +99,30 @@ app.controller("BlogDataUserController", function ($scope) {
       xhr.send();
     });
   };
+  $scope.update = function (id_blog, newblogentry) {
+    console.log(id_blog);
+    var xhr = new XMLHttpRequest();
+    xhr.open("POST", "/api/editBlogEntry", false);
+    xhr.setRequestHeader("Content-Type", "application/json");
+    var sendstr = JSON.stringify({
+      id_blog: id_blog,
+      newblogentry: $scope.newblogentry,
+    });
+    console.log(sendstr);
+    xhr.send(sendstr);
+  };
+
+  $scope.delete = function (id_blog) {
+    console.log(id_blog);
+    var xhr = new XMLHttpRequest();
+    xhr.open("POST", "/api/deleteBlogEntry", false);
+    xhr.setRequestHeader("Content-Type", "application/json");
+    var sendstr = JSON.stringify({ id_blog: id_blog });
+    console.log(sendstr);
+    xhr.send(sendstr);
+  };
+
   $scope.sendrequest = setTimeout($scope.request, 100);
 });
+
+app.controller("");

@@ -49,6 +49,37 @@
                             <div ng-repeat="blogentry in data | orderBy:'-idblogentry'" class="shadow-lg p-3 mb-5 bg-white rounded">
                                 <p>Blogentry Nr. {{blogentry.idblogentry}}</p>
                                 <p>{{blogentry.blogtext}}</p>
+                                <p>
+                                    <span>                                        
+                                        <form method="POST" action="/api/editBlogEntry">
+                                            <div class="form-group">
+                                            <label for="exampleFormControlInput1">Enter New Blogentry</label>
+                                            <input
+                                                type="text"
+                                                class="form-control"
+                                                id="exampleFormControlInput1"
+                                                value="{{blogentry.blogtext}}"
+                                                name="newblogentry"
+                                            />
+                                            <input
+                                                type="hidden"
+                                                id="custId"
+                                                name="blog_id"
+                                                value={{blogentry.idblogentry}}
+                                            />
+                                            </div>
+                                            <input class="btn btn-secondary my-2 my-sm-0" type="submit" value="Submit Edit"/>
+                                        </form>
+                                        <button
+                                        class="btn btn-secondary my-2 my-sm-0"
+                                        style="margin-top: 40px;"
+                                        type="submit"
+                                        title="Delete Entry"
+                                        ng-click="delete(blogentry.idblogentry)">
+                                        Delete
+                                        </button>
+                                    </span>
+                                </p>
                             </div>
                         </div>
                     </div>

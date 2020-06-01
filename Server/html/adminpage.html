@@ -1,8 +1,8 @@
-<!doctype html>
-<html lang="en" class="h-100" ng-app="ngRepeatUser" >
-    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.7.9/angular.min.js"></script>
-    <script src="/js/data.js"></script>
-    <ng-include src="'/html/header.html'"></ng-include>
+<!DOCTYPE html>
+<html lang="en" class="h-100" ng-app="DataManagerApp">
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.7.9/angular.min.js"></script>
+  <ng-include src="'/html/header.html'"></ng-include>
+  <script src="/js/data.js"></script>
     <main role="main" class="flex-shrink-0">  
         <div class="container" style="margin-top: 60px;">
             <div class="text-center">
@@ -12,7 +12,7 @@
                 <p>You may edit or delete them, or set them as a admin!</p>
                 <p>Have fun!</h3>
             </div>
-
+            <div class="text-center">
             <div ng-controller="UserDataController" style="margin-top: 40px;">
                 <div ng-repeat="user in data">
                     {{user.idbloguser}}
@@ -21,6 +21,7 @@
                     {{user.isAdmin}}
                     <hr/>
                 </div>
+            </div>
             </div>
         </div>
     </main>

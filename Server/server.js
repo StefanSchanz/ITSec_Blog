@@ -8,6 +8,7 @@ var mysql = require("mysql");
 var session = require("express-session");
 
 var bodyParser = require("body-parser"); //form elements
+app.use(bodyParser.json());
 
 app.use(bodyParser.urlencoded({ extended: false }));
 
@@ -71,7 +72,7 @@ app.post("/api/register", function (req, res) {
   }
 });
 
-app.get("/api/admin", function (req, res) {
+app.get("/admin", function (req, res) {
   res.sendFile(path.join(__dirname, "/html/adminpage.html"));
 });
 
@@ -135,6 +136,30 @@ app.post("/api/createBlogEntry", function (req, res) {
   if (req.session.user_id != "") {
     conn.query(
       `INSERT INTO blogentry (blogtext, bloguser_idbloguser) VALUES('${req.body.blogentry}', ${req.session.user_id});`
+    );
+    res.redirect("/ownBlog");
+  } else {
+    res.redirect("/");
+  }
+});
+
+app.post("/api/deleteBlogEntry", function (req, res) {
+  if (req.session.user_id != "") {
+    console.log(req.body.id_blog);
+    conn.query(`DELETE FROM blogentry WHERE idblogentry=${req.body.id_blog};`);
+    res.redirect("/ownBlog");
+  } else {
+    res.redirect("/");
+  }
+});
+
+app.post("/api/editBlogEntry", function (req, res) {
+  var newblogentry = req.body.newblogentry;
+  var blog_id = req.body.blog_id;
+  blog_id = parseInt(blog_id);
+  if (req.session.user_id != "") {
+    conn.query(
+      `UPDATE blogentry SET blogtext = '${newblogentry}' WHERE idblogentry=${blog_id};`
     );
     res.redirect("/ownBlog");
   } else {
