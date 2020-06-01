@@ -167,6 +167,27 @@ app.post("/api/editBlogEntry", function (req, res) {
   }
 });
 
+app.get("/api/getloggeduseradmin", function (req, res) {
+  res.send(req.session.admin);
+});
+
+app.post("/api/editUser", function (req, res) {
+  var newusername = req.body.newusername;
+  var user_id = req.body.user_id;
+  var newpassword = req.body.newpassword;
+  var newisAdmin = req.body.newisAdmin;
+  user_id = parseInt(user_id);
+  newisAdmin = parseInt(newisAdmin);
+  if (req.session.admin != false) {
+    conn.query(
+      `UPDATE bloguser SET username = '${newusername}', password = '${newpassword}', isAdmin = ${newisAdmin} WHERE idbloguser=${user_id};`
+    );
+    res.redirect("/admin");
+  } else {
+    res.redirect("/");
+  }
+});
+
 app.listen(3000, function () {
   console.log("listening on *:3000");
 });

@@ -15,10 +15,55 @@
             <div class="text-center">
             <div ng-controller="UserDataController" style="margin-top: 40px;">
                 <div ng-repeat="user in data">
-                    {{user.idbloguser}}
-                    {{user.username}}
-                    {{user.password}}
-                    {{user.isAdmin}}
+                    <p>Id User: {{user.idbloguser}}</p>
+                    <p>Username: {{user.username}}</p>
+                    <p>Password: {{user.password}}</p>
+                    <p>isAdmin: {{user.isAdmin}}</p>
+                    <p>
+                        <span>                                        
+                            <form method="POST" action="/api/editUser">
+                                <div class="form-group">
+                                <label for="exampleFormControlInput1">Enter New Blogentry</label>
+                                <input
+                                    type="text"
+                                    class="form-control"
+                                    id="exampleFormControlInput1"
+                                    value="{{user.username}}"
+                                    name="newusername"
+                                />
+                                <input
+                                    type="text"
+                                    class="form-control"
+                                    id="exampleFormControlInput2"
+                                    value="{{user.password}}"
+                                    name="newpassword"
+                                />
+                                <input
+                                    type="text"
+                                    class="form-control"
+                                    id="exampleFormControlInput3"
+                                    value="{{user.isAdmin}}"
+                                    name="newisAdmin"
+                                />
+                                <input
+                                    type="hidden"
+                                    id="custId"
+                                    name="user_id"
+                                    value={{user.idbloguser}}
+                                />
+                                </div>
+                                <input class="btn btn-secondary my-2 my-sm-0" type="submit" value="Submit Edit"/>
+                            </form>
+                            <button
+                            class="btn btn-secondary my-2 my-sm-0"
+                            style="margin-top: 40px;"
+                            type="submit"
+                            title="Delete Entry"
+                            ng-click="delete(user.idbloguser)">
+                            Delete User
+                            </button>
+                        </span>
+                    </p>
                     <hr/>
                 </div>
             </div>
