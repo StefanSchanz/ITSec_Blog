@@ -118,4 +118,34 @@ app.controller("BlogDataUserController", function ($scope) {
   $scope.sendrequest = setTimeout($scope.request, 100);
 });
 
+app.controller("AdminController", function ($scope) {
+  $scope.data = "";
+  $scope.request = function () {
+    setTimeout(() => {
+      var xhr = new XMLHttpRequest();
+      xhr.open("GET", "/api/getloggeduseradmin", true);
+      xhr.responseText = "text";
+      xhr.onload = function () {
+        if (xhr.readyState == xhr.DONE) {
+          if (xhr.status == 200) {
+            var obj = xhr.responseText;
+            if (obj.length) {
+              $scope.$apply(function () {
+                if (obj == "true") {
+                } else {
+                  obj = "";
+                }
+                console.log(obj);
+                $scope.data = obj;
+              });
+            }
+          }
+        }
+      };
+      xhr.send();
+    });
+  };
+  $scope.sendrequest = setTimeout($scope.request, 100);
+});
+
 app.controller("");

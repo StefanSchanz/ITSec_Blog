@@ -97,6 +97,8 @@ app.post("/login", function (req, res) {
           req.session.user_id = result[0].idbloguser;
           if (result[0].isAdmin == 1) {
             req.session.admin = true;
+          } else {
+            req.session.admin = false;
           }
           req.session.save();
           res.redirect("/");
@@ -178,6 +180,7 @@ app.post("/api/editUser", function (req, res) {
   var newisAdmin = req.body.newisAdmin;
   user_id = parseInt(user_id);
   newisAdmin = parseInt(newisAdmin);
+  console.log(req.session.admin);
   if (req.session.admin != false) {
     conn.query(
       `UPDATE bloguser SET username = '${newusername}', password = '${newpassword}', isAdmin = ${newisAdmin} WHERE idbloguser=${user_id};`

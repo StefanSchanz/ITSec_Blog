@@ -75,6 +75,11 @@
               <a class="nav-link" href="/ownBlog">{{data}}'s Blog</a>
             </span>
           </li>
+          <li ng-controller="AdminController" class="nav-item">
+            <span ng-if="data.length>=1">
+              <a class="nav-link" href="/admin">Admin-Site</a>
+            </span>
+          </li>
         </ul>
         <div ng-controller="LoginController">
           <div ng-if="data.length<1">
