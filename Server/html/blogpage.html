@@ -11,15 +11,31 @@
                 <p>Here you can create, edit or delete your Posts!</p>
                 <p>Have fun!</h3>
             </div>
-            <div class="text-center">
-            <h1 style="margin-top: 40px;">Your recent Blog Entries: </h1>
-            <br>
-            <div ng-controller="BlogDataUserController">
-                <div ng-repeat="blogentry in data | orderBy:'-idblogentry'" class="shadow-lg p-3 mb-5 bg-white rounded">
-                    <p>Blogentry Nr. {{blogentry.idblogentry}}</p>
-                    <p>{{blogentry.blogtext}}</p>
+
+            <div ng-controller="LoginController">
+                <div ng-if="data.length<1">
+                    <div class="text-center">
+                        <h1 style="margin-top: 40px;">Ough you found a site that's only possible to use by Users!</h1>
+                        <h1>Log in or registrate above to use this site!</h1>
+                        <br>
+                    </div>
+                </div>
+                <div ng-if="data.length>=1">
+                    <div class="text-center">
+                        <h1 style="margin-top: 40px;">Add a new Blog Entry:</h1>
+                        <br>
+
+                        <button type="button" class="btn btn-secondary">Add new Entry</button>
+
+                        <h1 style="margin-top: 40px;">Your recent Blog Entries: </h1>
+                        <br>
+                        <div ng-controller="BlogDataUserController">
+                            <div ng-repeat="blogentry in data | orderBy:'-idblogentry'" class="shadow-lg p-3 mb-5 bg-white rounded">
+                                <p>Blogentry Nr. {{blogentry.idblogentry}}</p>
+                                <p>{{blogentry.blogtext}}</p>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
-            </div>
-        </div>
     </main>
