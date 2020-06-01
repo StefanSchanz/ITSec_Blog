@@ -24,9 +24,25 @@
                     <div class="text-center">
                         <h1 style="margin-top: 40px;">Add a new Blog Entry:</h1>
                         <br>
-
-                        <button type="button" class="btn btn-secondary">Add new Entry</button>
-
+                        <div class="container">
+                            <div class="col-6 mx-auto">
+                              <div class="text-center">
+                                <form method="POST" action="/api/createBlogEntry">
+                                  <div class="form-group">
+                                    <label for="exampleFormControlInput1">Enter New Blogentry</label>
+                                    <input
+                                      type="text"
+                                      class="form-control"
+                                      id="exampleFormControlInput1"
+                                      placeholder="blogentry"
+                                      name="blogentry"
+                                    />
+                                  </div>
+                                  <input class="form-control" type="submit" value="Add new global Blogentry"/>
+                                </form>
+                              </div>
+                            </div>
+                        </div>
                         <h1 style="margin-top: 40px;">Your recent Blog Entries: </h1>
                         <br>
                         <div ng-controller="BlogDataUserController">

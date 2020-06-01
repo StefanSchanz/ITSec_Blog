@@ -71,12 +71,6 @@ app.post("/api/register", function (req, res) {
   }
 });
 
-app.post("/api/postentry", function (req, res) {
-  conn.query(
-    `INSERT INTO blogentry (blogtext, bloguser_idbloguser) VALUES ('${req.body.blogtext}', '${current_user_id_to_insert}');`
-  );
-});
-
 app.get("/api/admin", function (req, res) {
   res.sendFile(path.join(__dirname, "/html/adminpage.html"));
 });
@@ -135,6 +129,17 @@ app.get("/api/listBlogs", function (req, res) {
 
 app.get("/ownBlog", function (req, res) {
   res.sendFile(path.join(__dirname, "/html/blogpage.html"));
+});
+
+app.post("/api/createBlogEntry", function (req, res) {
+  if (req.session.user_id != "") {
+    conn.query(
+      `INSERT INTO blogentry (blogtext, bloguser_idbloguser) VALUES('${req.body.blogentry}', ${req.session.user_id});`
+    );
+    res.redirect("/ownBlog");
+  } else {
+    res.redirect("/");
+  }
 });
 
 app.listen(3000, function () {
