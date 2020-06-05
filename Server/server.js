@@ -18,13 +18,17 @@ app.use(
     secret: "ThisIsSecret",
     resave: false,
     saveUninitialized: true,
-    cookie: { expires: 600000000000000 },
+    cookie: {
+      expires: 600000000000000 /*, httpOnly: false    Stefan Schanz - httpOnly: false must be used
+                                              allows to get the cookie with: document.cookie  */,
+    },
     user_id: "",
     admin: false,
   })
 );
 
 var conn = mysql.createConnection({
+  // SQL Connection
   host: "localhost",
   user: "ITSecUser",
   password: "admin",
@@ -41,17 +45,43 @@ app.use("/css", express.static(__dirname + "/css"));
 app.use("/js", express.static(__dirname + "/js"));
 app.use("/html", express.static(__dirname + "/html/public"));
 
+let connection_arr = {};
+
+/*Stefan Schanz - when the same connection fails login 20 times
+  the User-IP gets completely blocked from the Webserver.
+  */
+
+/*Everytime something is called, that function get called.*/
+app.get("*", function (req, res, next) {
+  if (connection_arr[req.connection.remoteAddress] > 18) {
+    res.send(401);
+  } else {
+    next();
+  }
+});
+
 app.get("/", function (req, res) {
+  // wenn "/" aufgerufen -> /html/index.html schicken.
   res.sendFile(path.join(__dirname, "/html/index.html"));
 });
 
 app.get("/api/getUsers", function (req, res) {
-  conn.query("SELECT * FROM bloguser", function (err, result, fields) {
-    res.send(result);
-  });
+  // api for getting all Users
+  if (req.session.admin != undefined) {
+    if (req.session.admin != false) {
+      //Stefan Schanz - the line above checks if the
+      //request session is applied by an admin, if not, redirect.
+      conn.query("SELECT * FROM bloguser", function (err, result, fields) {
+        res.send(result);
+      });
+    }
+  } else {
+    res.redirect("/");
+  }
 });
 
 app.get("/api/getBlogEntries", function (req, res) {
+  // api for getting all Blog entries
   conn.query(
     "SELECT blog.idblogentry, blog.blogtext, user.username FROM blogentry as blog " +
       "JOIN bloguser as user ON blog.bloguser_idbloguser = user.idbloguser",
@@ -62,9 +92,10 @@ app.get("/api/getBlogEntries", function (req, res) {
 });
 
 app.post("/api/register", function (req, res) {
+  // api for registering a new user
   if (req.body.password == req.body.passwordretry) {
     conn.query(
-      `INSERT INTO bloguser (username, password) VALUES ('${req.body.username}', '${req.body.password}');`
+      `INSERT INTO bloguser (username, password) VALUES ('${req.body.username}', '${req.body.password}');` // for example SQL-Injection works here.
     );
     res.redirect("/");
   } else {
@@ -73,34 +104,64 @@ app.post("/api/register", function (req, res) {
 });
 
 app.get("/admin", function (req, res) {
+  // send admin page
   res.sendFile(path.join(__dirname, "/html/adminpage.html"));
 });
 
 app.get("/Registrate", function (req, res) {
+  // send registration site
   res.sendFile(path.join(__dirname, "/html/registrate.html"));
 });
 
 app.post("/login", function (req, res) {
+  // send login page
   var message = "";
   var session = req.session;
 
+  /*Stefan Schanz - check if connection exists in connection_arr
+    when not, set default to 0.. this happens too when the user logins successfully
+    when the connection fails, the count gets incremented.
+   */
+  let check_existence = connection_arr[req.connection.remoteAddress];
+
+  if (check_existence == undefined) {
+    connection_arr[req.connection.remoteAddress] = 0;
+  } else {
+    connection_arr[req.connection.remoteAddress] += 1;
+  }
   if (req.method == "POST") {
     var post = req.body;
     var name = post.username;
     var pass = post.password;
+    // Stefan Schanz
+    var sql =
+      "SELECT idbloguser, username, isAdmin FROM ?? WHERE ?? = ? AND ?? = ?";
+    var inserts = ["bloguser", "username", name, "password", pass];
+    sql = mysql.format(sql, inserts);
 
     conn.query(
-      `SELECT idbloguser, username, isAdmin FROM  bloguser WHERE username='${name}' AND password='${pass}'`,
+      sql,
+      /*OLD INSECURE COMMAND BELOW*/
+
+      // `SELECT idbloguser, username, isAdmin FROM  bloguser WHERE username='${name}' AND password='${pass}'`,
+      // Stefan Schanz - Here the login is done! - That Code above is vulnerable against SQL-Injection!
       function (err, result, fields) {
-        if (result.length) {
-          req.session.username = name;
-          req.session.user_id = result[0].idbloguser;
-          if (result[0].isAdmin == 1) {
-            req.session.admin = true;
+        if (result != undefined) {
+          if (result.length != 0) {
+            req.session.username = name; // save other things for the session.
+            req.session.user_id = result[0].idbloguser;
+            if (result[0].isAdmin == 1) {
+              req.session.admin = true;
+            } else {
+              req.session.admin = false;
+            }
+            connection_arr[req.connection.remoteAddress] = 0;
+            req.session.save();
+            res.redirect("/"); //redirect to main page
           } else {
-            req.session.admin = false;
+            res.redirect("/");
           }
-          req.session.save();
+        } else {
           res.redirect("/");
         }
       }
@@ -148,9 +209,9 @@ app.post("/api/createBlogEntry", function (req, res) {
 app.post("/api/deleteBlogEntry", function (req, res) {
   if (req.session.user_id != "") {
     conn.query(`DELETE FROM blogentry WHERE idblogentry=${req.body.id_blog};`);
-    res.redirect("/ownBlog");
+    res.send("Message Deleted!");
   } else {
-    res.redirect("/");
+    res.send("Message Delete Failed.");
   }
 });
 
@@ -195,9 +256,9 @@ app.post("/api/editUser", function (req, res) {
 app.post("/api/deleteUser", function (req, res) {
   if (req.session.admin != false) {
     conn.query(`DELETE FROM bloguser WHERE idbloguser=${req.body.id_user};`);
-    res.redirect("/admin");
+    res.send("Message Deleted!");
   } else {
-    res.redirect("/");
+    res.send("Message Delete Failed.");
   }
 });
 

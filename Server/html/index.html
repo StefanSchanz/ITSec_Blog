@@ -20,6 +20,7 @@
             <div ng-controller="BlogDataController">
                 <div ng-repeat="blogentry in data | orderBy:'-idblogentry'" class="shadow-lg p-3 mb-5 bg-white rounded">
                     <p>Blogentry Nr. {{blogentry.idblogentry}}</p>
+                    <!--<p ng-bind-html="blogentry.blogtext"></p> Stefan Schanz - must be used to get interpreted as HTML-->
                     <p>{{blogentry.blogtext}}</p>
                     <p><i><u>From {{blogentry.username}}</u></i></p>
                 </div>

@@ -1,5 +1,11 @@
 var app = angular.module("DataManagerApp", []);
 
+/*app.config(function ($sceProvider) {
+  // Completely disable SCE.  For demonstration purposes only!
+  // Do not use in new projects or libraries.
+  $sceProvider.enabled(false);
+});     Stefan Schanz - prevents that HTML Elements can't be rendered*/
+
 app.controller("UserDataController", function ($scope) {
   $scope.data = [];
   $scope.request = function () {
@@ -27,6 +33,15 @@ app.controller("UserDataController", function ($scope) {
     xhr.setRequestHeader("Content-Type", "application/json");
     var sendstr = JSON.stringify({ id_user: id_user });
     xhr.send(sendstr);
+    var restxt = xhr.responseText;
+    console.log(restxt);
+    if (restxt == "Message Deleted!") {
+      $scope.data.forEach((element, index) => {
+        if (element.idbloguser == id_user) {
+          $scope.data.splice(index, 1);
+        }
+      });
+    }
   };
 
   $scope.sendrequest = setTimeout($scope.request, 100);
@@ -81,6 +96,7 @@ app.controller("LoginController", function ($scope) {
     var xhr = new XMLHttpRequest();
     xhr.open("POST", "/logout", false);
     xhr.send();
+    location.href = "/";
     $scope.data = "";
   };
   $scope.sendrequest = setTimeout($scope.request, 100);
@@ -113,6 +129,15 @@ app.controller("BlogDataUserController", function ($scope) {
     xhr.setRequestHeader("Content-Type", "application/json");
     var sendstr = JSON.stringify({ id_blog: id_blog });
     xhr.send(sendstr);
+    var restxt = xhr.responseText;
+    console.log(restxt);
+    if (restxt == "Message Deleted!") {
+      $scope.data.forEach((element, index) => {
+        if (element.idblogentry == id_blog) {
+          $scope.data.splice(index, 1);
+        }
+      });
+    }
   };
 
   $scope.sendrequest = setTimeout($scope.request, 100);
@@ -135,7 +160,6 @@ app.controller("AdminController", function ($scope) {
                 } else {
                   obj = "";
                 }
-                console.log(obj);
                 $scope.data = obj;
               });
             }
